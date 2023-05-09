@@ -30,6 +30,8 @@ https://www.youtube.com/watch?v=3uHbNdtHrEA
    * [Azure](#azure)
    * [AWS](#aws)
 2. [Create credentials](#2-create-credentials)
+   * [Azure](#create-azure-credentials)
+   * [AWS](#create-aws-credentials)
 3. [Install Plugin](#3-install-plugin)
 4. [Configure plugin](#4-configure-plugin)
 5. [Run a Build](#5-run-build)
@@ -149,16 +151,36 @@ On `Create policy` page choose `JSON` and paste content:
 
 
 ### 2. Create credentials
+### Create Azure Credentials
+* Go to `Dashboard -> Manage Jenkins -> Plugins -> Installed plugins`
+* Search for `Azure Credentials` and install this plugin (https://plugins.jenkins.io/azure-credentials/)
+* Go to `Dashboard -> Manage Jenkins -> Manage Credentials -> System -> Global credentials`
+* Click on `+ Add Credentials`
+* Select `Azure Service Prinicipal` in the `Kind` dropdown
+* Enter credentials from the [Prepare Azure credentials step](#azure) above
+---
 
+### Create AWS credentials
+* Go to `Dashboard -> Manage Jenkins -> Plugins -> Installed plugins`
+* Search for `CloudBees AWS Credentials` and install this plugin (https://plugins.jenkins.io/aws-credentials/)
+* Go to `Dashboard -> Manage Jenkins -> Manage Credentials -> System -> Global credentials`
+* Click on `+ Add Credentials`
+* Select `AWS Credentials` in the `Kind` dropdown
+* Enter credentials from the [Prepare AWS credentials step](#aws) above
 
 ### 3. Install plugin
-
+* Go to `Dashboard -> Manage Jenkins -> Plugins -> Installed plugins`
+* Search for `Aristiun Aribot` and install
 
 ### 4. Configure plugin
-
+* Open you project
+* Go to `Configure` tab
+* In the `Build Steps` sections click on `Add build step` and choose `Aristiun Aribot`
+* Enter step name (optional)
+* Set previously created credentials for your target provider (AWS or Azure)
+* Click `Save`
 
 ### 5. Run a build
-
-
-### 6. Onboarding
-
+* On the next build run go to the `Console output`
+* You should get onboarding link. Click it to proceed with registration or log in if you already have account to create new account for your Jenkins project.
+![assets/console.png](assets/console.png)
