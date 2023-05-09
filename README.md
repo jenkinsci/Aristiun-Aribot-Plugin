@@ -1,6 +1,6 @@
 # Aribot
 
-[![Aribot](https://avatars.githubusercontent.com/ml/15127?s=140&v=4)](https://snyk.io)
+[![Aribot](src/main/webapp/img/logo.png)](https://www.aristiun.com/)
 
 ## Description
 
@@ -92,7 +92,9 @@ Go to Azure App Registrations
 * Repeat it for another two roles. 
 
 **Step 6** 
-* You can use the Application ID, Tenant ID and value you copied earlier to complete adding an account.
+* You can use the Application ID, Tenant ID, Client ID, Client Secret to create credentials below
+* Subscription ID you can find on the `Subscriptions` page of the Azure portal
+* Resource group name should be target resource group from the `Resource groups` page
 ---
 
 ### AWS
@@ -156,7 +158,7 @@ On `Create policy` page choose `JSON` and paste content:
 * Search for `Azure Credentials` and install this plugin (https://plugins.jenkins.io/azure-credentials/)
 * Go to `Dashboard -> Manage Jenkins -> Manage Credentials -> System -> Global credentials`
 * Click on `+ Add Credentials`
-* Select `Azure Service Prinicipal` in the `Kind` dropdown
+* Select `Azure Credentials (Aribot)` in the `Kind` dropdown
 * Enter credentials from the [Prepare Azure credentials step](#azure) above
 ---
 
