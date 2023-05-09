@@ -61,7 +61,7 @@ Go to Azure App Registrations
 **Step 4**
 * Copy values of Application **(Client) ID** and Directory **(Tenant) ID**
 * Click to `Add certificate or secret`
-![assets/azure_credentials.png](assets/azure/azure_credentials.png)
+![assets/credentials.png](assets/azure/credentials.png)
 * In Client Secrets tab, click on `New Client Secret`
 * Fill **Description** and **Expires** fields.
 * Copy value of **Value** field
