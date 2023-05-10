@@ -73,7 +73,7 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
     private void processResponse(CloseableHttpResponse response, TaskListener listener) throws IOException {
         String responseString = EntityUtils.toString(response.getEntity());
         int statusCode = response.getStatusLine().getStatusCode();
-        if (statusCode != 200) {
+        if (statusCode != 200 && statusCode != 201) {
             listener.getLogger().printf("Request failed. Response was %s%n", responseString);
         } else {
             JSONObject jsonObj = new JSONObject(responseString);
