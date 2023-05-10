@@ -2,7 +2,6 @@ package io.jenkins.plugins.aribot;
 
 import com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl;
 import com.cloudbees.plugins.credentials.*;
-import com.microsoft.azure.util.AzureCredentialUtil;
 import com.microsoft.azure.util.AzureCredentials;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -21,13 +20,14 @@ public class AristiunAribotBuilderTest {
     public JenkinsRule jenkins = new JenkinsRule();
 
     final CredentialsScope scope = CredentialsScope.valueOf("USER");
-    AzureCredentials credentialsAzure = new AzureCredentials(
+    AzureCredentials credentialsAzure = new ExtendedAzureCredentials(
             scope,
             "aribot-test-azure",
             "Test credentials",
             "d56f890ea2a7-414d-9aaa-2b5d87706c6c",
             "62f84ec1-5bf9-4386-b07b-966f581867e1",
-            "48cd5d24-8228-4ad4-9596-74b051ab7785"
+            "48cd5d24-8228-4ad4-9596-74b051ab7785",
+            "staging"
     );
 
     final AWSCredentialsImpl credentialsAWS = new AWSCredentialsImpl(

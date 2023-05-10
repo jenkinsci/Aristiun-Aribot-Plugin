@@ -2,10 +2,8 @@ package io.jenkins.plugins.aribot;
 
 import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.SystemCredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl;
-import com.microsoft.azure.util.AzureCredentials;
 import hudson.Launcher;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -19,8 +17,6 @@ import hudson.security.ACL;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.util.ListBoxModel;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -34,25 +30,22 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.util.List;
 
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
 import jenkins.model.Jenkins;
 
+
 public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
 
     private String name;
     private String credentials;
-    private static String aribotPipelineRegistrationUrl = "http://localhost:8000/pipeline-api/register/";
-    private static String aribotUrl = "http://localhost:3000/";
+    private final static String aribotPipelineRegistrationUrl = "https://aribot.aristiun.com/pipeline-api/register/";
+    private final static String aribotUrl = "https://aribot.aristiun.com/";
 
     @DataBoundConstructor
     public AristiunAribotBuilder(String credentials) {
@@ -79,16 +72,16 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
 
     private void processResponse(CloseableHttpResponse response, TaskListener listener) throws IOException {
         String responseString = EntityUtils.toString(response.getEntity());
-        JSONObject jsonObj = new JSONObject(responseString);
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode != 200) {
             listener.getLogger().printf("Request failed. Response was %s%n", responseString);
         } else {
+            JSONObject jsonObj = new JSONObject(responseString);
             String code = jsonObj.getString("code");
             switch (code) {
                 case "reg_link":
                     listener.getLogger().printf(
-                            "Your registration link is %slink-auth/?token=%s=source=jenkins_azure%n",
+                            "Your registration link is %spipeline-onboarding/?token=%s%n",
                             this.aribotUrl,
                             jsonObj.getString("registration_token")
                     );
@@ -108,7 +101,7 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-    private void doRegisterAzurePipeline(AzureCredentials credentials, TaskListener listener) {
+    private void doRegisterAzurePipeline(ExtendedAzureCredentials credentials, TaskListener listener) {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(String.format("%s%s", this.aribotPipelineRegistrationUrl, "?pipeline=jenkins_azure"));
@@ -116,7 +109,7 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
 
         JSONObject payload = new JSONObject();
         payload.put("subscription_id", credentials.getSubscriptionId());
-        payload.put("resource_group_name", "A");
+        payload.put("resource_group_name", credentials.getResourceGroupName());
         payload.put("tenant_id", credentials.getTenant());
         payload.put("account_name", this.getName());
         payload.put("client_id", credentials.getClientId());
@@ -139,7 +132,8 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
         httpPost.setHeader("Content-type", "application/json");
 
         JSONObject payload = new JSONObject();
-        payload.put("subscription_id", "subscriptionId");
+        payload.put("access_key", credentials.getAccessKey());
+        payload.put("secret_access_key", credentials.getSecretKey());
         httpPost.setEntity(new StringEntity(payload.toString(), ContentType.APPLICATION_JSON));
         try {
             CloseableHttpResponse response = httpclient.execute(httpPost);
@@ -152,16 +146,19 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
     }
 
     private void registerPipeline(TaskListener listener) {
-        SystemCredentialsProvider provider = SystemCredentialsProvider.getInstance();
-        for (Credentials credentials: provider.getCredentials()) {
+        List<Credentials> credentialsList = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                com.cloudbees.plugins.credentials.Credentials.class,
+                Jenkins.get(),
+                null
+        );
+        for (Credentials credentials: credentialsList) {
             if (credentials != null) {
-                if (credentials instanceof AzureCredentials) {
-                    AzureCredentials credentialsInstance = ((AzureCredentials) credentials);
+                if (credentials instanceof ExtendedAzureCredentials) {
+                    ExtendedAzureCredentials credentialsInstance = ((ExtendedAzureCredentials) credentials);
                     if (credentialsInstance.getId().equals(this.credentials)) {
                         this.doRegisterAzurePipeline(credentialsInstance, listener);
                     };
-                }
-                if (credentials instanceof AWSCredentialsImpl) {
+                } else if (credentials instanceof AWSCredentialsImpl) {
                     AWSCredentialsImpl credentialsInstance = ((AWSCredentialsImpl) credentials);
                     if (credentialsInstance.getId().equals(this.credentials)) {
                         this.doRegisterAWSPipeline(credentialsInstance, listener);
@@ -209,9 +206,13 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
                     return model.includeCurrentValue(credentialsId);
                 }
             }
-            return model.includeAs(ACL.SYSTEM, item, AzureCredentials.class)
+            return model.includeAs(ACL.SYSTEM, item, ExtendedAzureCredentials.class)
                     .includeAs(ACL.SYSTEM, item, AWSCredentialsImpl.class)
                     .includeCurrentValue(credentialsId);
+        }
+
+        public String getIconFileName() {
+            return "/plugin/aribot/img/logo.png";
         }
 
         @Override
