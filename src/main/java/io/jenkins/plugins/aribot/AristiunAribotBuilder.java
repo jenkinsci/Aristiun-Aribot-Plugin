@@ -1,6 +1,29 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) [2023] [Aristiun B.V.]
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ *    in the Software without restriction, including without limitation the rights
+ *    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *     copies of the Software, and to permit persons to whom the Software is
+ *    furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package io.jenkins.plugins.aribot;
 
-import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl;
@@ -33,7 +56,6 @@ import org.kohsuke.stapler.QueryParameter;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.util.List;
 
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
@@ -145,36 +167,33 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-    private void registerPipeline(TaskListener listener) {
-        List<Credentials> credentialsList = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                com.cloudbees.plugins.credentials.Credentials.class,
-                Jenkins.get(),
-                null
+    private void registerPipeline(Run run, TaskListener listener) {
+        ExtendedAzureCredentials azureCredentials = CredentialsProvider.findCredentialById(
+                this.credentials,
+                ExtendedAzureCredentials.class,
+                run
         );
-        for (Credentials credentials: credentialsList) {
-            if (credentials != null) {
-                if (credentials instanceof ExtendedAzureCredentials) {
-                    ExtendedAzureCredentials credentialsInstance = ((ExtendedAzureCredentials) credentials);
-                    if (credentialsInstance.getId().equals(this.credentials)) {
-                        this.doRegisterAzurePipeline(credentialsInstance, listener);
-                    };
-                } else if (credentials instanceof AWSCredentialsImpl) {
-                    AWSCredentialsImpl credentialsInstance = ((AWSCredentialsImpl) credentials);
-                    if (credentialsInstance.getId().equals(this.credentials)) {
-                        this.doRegisterAWSPipeline(credentialsInstance, listener);
-                    };
-                }
-            }
-        }
+        if (azureCredentials != null) {
+            this.doRegisterAzurePipeline(azureCredentials, listener);
+        };
+
+        AWSCredentialsImpl awsCredentials = CredentialsProvider.findCredentialById(
+                this.credentials,
+                AWSCredentialsImpl.class,
+                run
+        );
+        if (awsCredentials != null) {
+            this.doRegisterAWSPipeline(awsCredentials, listener);
+        };
     };
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, EnvVars env, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         listener.getLogger().println("Starting Aribot");
-        this.registerPipeline(listener);
+        this.registerPipeline(run, listener);
     }
 
-    @Symbol("greet")
+    @Symbol("aribot")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 

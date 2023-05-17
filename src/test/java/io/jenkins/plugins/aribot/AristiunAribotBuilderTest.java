@@ -93,7 +93,7 @@ public class AristiunAribotBuilderTest {
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-scripted-pipeline");
         String pipelineScript
                 = String.format("node {\n"
-                + "  greet (name:'AribotTest', credentials:'%s')\n"
+                + "  aribot (name:'AribotTest', credentials:'%s')\n"
                 + "}", credentialsAzureId);
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
         WorkflowRun completedBuild = jenkins.assertBuildStatusSuccess(job.scheduleBuild2(0));
