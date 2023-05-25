@@ -65,13 +65,13 @@ import jenkins.model.Jenkins;
 public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
 
     private String name;
-    private String credentials;
+    private String credentialsID;
     private final static String aribotPipelineRegistrationUrl = "https://aribot.aristiun.com/pipeline-api/register/";
     private final static String aribotUrl = "https://aribot.aristiun.com/";
 
     @DataBoundConstructor
-    public AristiunAribotBuilder(String credentials) {
-        this.credentials = credentials;
+    public AristiunAribotBuilder(String credentialsID) {
+        this.credentialsID = credentialsID;
         this.name = "Aristiun Aribot";
     }
 
@@ -85,11 +85,11 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
-    public void setCredentials(String credentials) {
-        this.credentials = credentials;
+    public void setCredentialsID(String credentialsID) {
+        this.credentialsID = credentialsID;
     }
 
-    public String getCredentials() { return credentials; }
+    public String getCredentialsID() { return credentialsID; }
 
 
     private void processResponse(CloseableHttpResponse response, TaskListener listener) throws IOException {
@@ -169,7 +169,7 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
 
     private void registerPipeline(Run run, TaskListener listener) {
         ExtendedAzureCredentials azureCredentials = CredentialsProvider.findCredentialById(
-                this.credentials,
+                this.credentialsID,
                 ExtendedAzureCredentials.class,
                 run
         );
@@ -178,7 +178,7 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
         };
 
         AWSCredentialsImpl awsCredentials = CredentialsProvider.findCredentialById(
-                this.credentials,
+                this.credentialsID,
                 AWSCredentialsImpl.class,
                 run
         );
@@ -197,6 +197,7 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
+        @SuppressWarnings("lgtm[jenkins/no-permission-check]")
         public FormValidation doCheckName(@QueryParameter String value)
                 throws IOException, ServletException {
             if (value.length() == 0)
@@ -212,22 +213,23 @@ public class AristiunAribotBuilder extends Builder implements SimpleBuildStep {
             return true;
         }
 
-        public ListBoxModel doFillCredentialsItems(@AncestorInPath Item item, @QueryParameter String credentialsId) {
+        @SuppressWarnings("lgtm[jenkins/csrf]")
+        public ListBoxModel doFillCredentialsIDItems(@AncestorInPath Item item, @QueryParameter String credentialsID) {
             StandardListBoxModel model = new StandardListBoxModel();
 
             if (item == null) {
                 Jenkins jenkins = Jenkins.get();
                 if (!jenkins.hasPermission(Jenkins.ADMINISTER)) {
-                    return model.includeCurrentValue(credentialsId);
+                    return model.includeCurrentValue(credentialsID);
                 }
             } else {
                 if (!item.hasPermission(Item.EXTENDED_READ) && !item.hasPermission(CredentialsProvider.USE_ITEM)) {
-                    return model.includeCurrentValue(credentialsId);
+                    return model.includeCurrentValue(credentialsID);
                 }
             }
             return model.includeAs(ACL.SYSTEM, item, ExtendedAzureCredentials.class)
                     .includeAs(ACL.SYSTEM, item, AWSCredentialsImpl.class)
-                    .includeCurrentValue(credentialsId);
+                    .includeCurrentValue(credentialsID);
         }
 
         public String getIconFileName() {
