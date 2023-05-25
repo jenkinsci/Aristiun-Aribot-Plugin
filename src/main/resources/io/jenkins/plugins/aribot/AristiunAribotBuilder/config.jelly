@@ -4,7 +4,7 @@
         <f:textbox />
     </f:entry>
 
-    <f:entry title="${%Credentials}" field="credentials" help="/plugin/aribot/help-credentials.html">
+    <f:entry title="${%CredentialsID}" field="credentialsID" help="/plugin/aribot/help-credentials.html">
       <f:select/>
     </f:entry>
 </j:jelly>

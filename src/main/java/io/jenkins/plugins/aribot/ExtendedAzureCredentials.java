@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import com.cloudbees.plugins.credentials.CredentialsScope;
 import com.microsoft.azure.util.AzureCredentials;
 import hudson.Extension;
+import hudson.util.Secret;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 
@@ -41,7 +42,7 @@ public class ExtendedAzureCredentials extends AzureCredentials {
 
 
   @DataBoundConstructor
-  public ExtendedAzureCredentials(CredentialsScope scope, String id, String description, String subscriptionId, String clientId, String clientSecret, String resourceGroupName) {
+  public ExtendedAzureCredentials(CredentialsScope scope, String id, String description, String subscriptionId, String clientId, Secret clientSecret, String resourceGroupName) {
     super(scope, id, description, subscriptionId, clientId, clientSecret);
     this.resourceGroupName = resourceGroupName;
   }
