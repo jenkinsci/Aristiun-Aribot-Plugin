@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+
 package io.jenkins.plugins.aribot;
 
 import javax.annotation.Nonnull;
