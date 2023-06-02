@@ -186,4 +186,3 @@ On `Create policy` page choose `JSON` and paste content:
 * On the next build run go to the `Console output`
 * You should get onboarding link. Click it to proceed with registration or log in if you already have account to create new account for your Jenkins project.
 ![assets/console.png](assets/console.png)
-
