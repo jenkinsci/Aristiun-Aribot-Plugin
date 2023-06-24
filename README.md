@@ -1,4 +1,4 @@
-# Aribot
+# Aribot (Aristiun - Automated Threat Modeling, Platform Security and Pipeline Security tool)
 
 [![Aribot](src/main/webapp/img/logo.png)](https://www.aristiun.com/)
 
@@ -8,7 +8,7 @@ Aribot **works with your DevOps teams** and, thus, those working on the code bas
 
 Below are the features summary and **onboarding links **  per **lifecycle stage**:
 
-### Pipeline security
+### Pipeline security (Azure Devops, Github)
 **Streamlines security**: automated reviews, CI/CD integration, Supply Chain standards, reporting, and language agnostic.
 
 https://www.youtube.com/watch?v=RmRNerXjw4Q
@@ -18,7 +18,7 @@ Automates threat modeling: **traceable requirements, NIST 800 53 compliance**, a
 
 https://www.youtube.com/watch?v=qilq_nKpR9k
 
-### Platform security
+### Platform security (Azure, AWS, Google)
 Enhances cloud security: proactive detection, compliance measurement, continuous scanning, and seamless pipeline integration.
 
 https://www.youtube.com/watch?v=3uHbNdtHrEA
