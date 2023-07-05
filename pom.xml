@@ -11,7 +11,7 @@
 
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>aribot</artifactId>
-    <version>45.v73fc874f9c13</version>
+    <version>46.v73fc874f9c13-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>Aristiun Aribot</name>
@@ -31,7 +31,8 @@
     </scm>
 
     <properties>
-        <changelist>999999-SNAPSHOT</changelist>
+        <revision>1</revision>
+        <changelist>-SNAPSHOT</changelist>
         <jenkins.version>2.361.4</jenkins.version>
 
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
