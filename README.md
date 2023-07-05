@@ -6,6 +6,7 @@
 
 Aribot **works with your DevOps teams** and, thus, those working on the code base and the underlying infrastructure. It also provides deep security insights into  **Kubernetes clusters(AKS)**. It is available in **Free and Paid usage and accessible on the GitHub Marketplace**.
 
+---
 Below are the features summary and **onboarding links **  per **lifecycle stage**:
 
 ### Pipeline security (Azure Devops, Github)
