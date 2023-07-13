@@ -12,6 +12,12 @@ permissions:
   contents: write
 
 jobs:
+  dump:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Dump event payload
+        run: |
+          jq . "$GITHUB_EVENT_PATH"
   maven-cd:
     uses: jenkins-infra/github-reusable-workflows/.github/workflows/maven-cd.yml@v1
     secrets:
