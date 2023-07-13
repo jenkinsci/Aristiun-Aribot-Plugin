@@ -25,7 +25,7 @@ jobs:
         run: |
           $NAME
   maven-cd:
-    uses: jenkins-infra/github-reusable-workflows/.github/workflows/maven-cd.yml@v1
+    uses: ./.github/workflows/maven-cd.yml
     secrets:
       MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
       MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
