@@ -14,11 +14,8 @@ jobs:
     outputs:
       should_release: ${{ steps.verify-ci-status.outputs.result == 'success' && steps.interesting-categories.outputs.interesting == 'true' }}
     steps:
-      - name: Dump event payload
-        run: |
-          jq . "$GITHUB_EVENT_PATH"
       - name: Verify CI status
-        uses: jenkins-infra/verify-ci-status-action@v1.2.2
+        uses: ./.github/workflows/validate-ci-status.yaml
         id: verify-ci-status
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
