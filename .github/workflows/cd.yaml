@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: Dump event payload
         run: |
-          jq . "$GITHUB_EVENT_PATH"
-          jq -r .check_run.status < $GITHUB_EVENT_PATH
+          echo $(jq . "$GITHUB_EVENT_PATH") |
+          echo $(jq -r .check_run.status < $GITHUB_EVENT_PATH) |
           echo $NAME
   maven-cd:
     uses: jenkins-infra/github-reusable-workflows/.github/workflows/maven-cd.yml@v1
