@@ -12,18 +12,6 @@ permissions:
   contents: write
 
 jobs:
-  dump:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Dump event payload
-        run: |
-          jq . "$GITHUB_EVENT_PATH"
-      - name: Dump status
-        run: |
-          jq -r .check_run.status < $GITHUB_EVENT_PATH
-      - name: Dump name
-        run: |
-          $NAME
   maven-cd:
     uses: ./.github/workflows/maven-cd.yml
     secrets:
